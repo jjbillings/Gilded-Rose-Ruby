@@ -1,10 +1,15 @@
-class Normal
+class Item
   attr_reader :days_remaining, :quality
   def initialize(days_remaining: days_remaining, quality: quality)
     @days_remaining = days_remaining
     @quality = quality
   end
 
+  def tick
+  end
+end
+
+class Normal < Item
   def tick
     @days_remaining -= 1
     return if @quality <= 0
@@ -14,45 +19,7 @@ class Normal
   end
 end
 
-class Normal
-  attr_reader :days_remaining, :quality
-  def initialize(days_remaining: days_remaining, quality: quality)
-    @days_remaining = days_remaining
-    @quality = quality
-  end
-
-  def tick
-    @days_remaining -= 1
-    return if @quality <= 0
-
-    @quality -= 1
-    @quality -= 1 if @days_remaining < 0
-  end
-end
-
-class Normal
-  attr_reader :days_remaining, :quality
-  def initialize(days_remaining: days_remaining, quality: quality)
-    @days_remaining = days_remaining
-    @quality = quality
-  end
-
-  def tick
-    @days_remaining -= 1
-    return if @quality <= 0
-
-    @quality -= 1
-    @quality -= 1 if @days_remaining < 0
-  end
-end
-
-class AgedBrie
-  attr_reader :days_remaining, :quality
-  def initialize(days_remaining: days_remaining, quality: quality)
-    @days_remaining = days_remaining
-    @quality = quality
-  end
-
+class AgedBrie < Item
   def tick
     @days_remaining -= 1
     return if @quality == 50
@@ -63,13 +30,7 @@ class AgedBrie
   end
 end
 
-class Backstage
-  attr_reader :days_remaining, :quality
-  def initialize(days_remaining: days_remaining, quality: quality)
-    @days_remaining = days_remaining
-    @quality = quality
-  end
-
+class Backstage < Item
   def tick
     @days_remaining -= 1
     return if @quality == 50
@@ -81,14 +42,17 @@ class Backstage
   end
 end
 
-class Sulfras
-  attr_reader :days_remaining, :quality
-  def initialize(days_remaining: days_remaining, quality: quality)
-    @days_remaining = days_remaining
-    @quality = quality
-  end
+class ItemFactory
+  def self.get_item(name:, days_remaining:, quality: )
+    mapper = {
+      "Normal Item" => Normal,
+      "Aged Brie" => AgedBrie,
+      "Backstage passes to a TAFKAL80ETC concert" => Backstage,
+      "Sulfuras, Hand of Ragnaros" => Item,
+      "Conjured Mana" => Item
+    }
 
-  def tick
+    mapper[name].new(days_remaining: days_remaining, quality: quality)
   end
 end
 
@@ -101,43 +65,11 @@ class GildedRose
     @quality = quality
   end
 
-  def normal_tick
-    normal = Normal.new(days_remaining: @days_remaining, quality: @quality)
-    normal.tick
-
-    @days_remaining = normal.days_remaining
-    @quality = normal.quality
-  end
-
-  def aged_brie_tick
-    aged_brie = AgedBrie.new(days_remaining: @days_remaining, quality: @quality)
-    aged_brie.tick
-
-    @days_remaining = aged_brie.days_remaining
-    @quality = aged_brie.quality
-  end
-
-  def backstage_tick
-    backstage = Backstage.new(days_remaining: @days_remaining, quality: @quality)
-    backstage.tick
-
-    @days_remaining = backstage.days_remaining
-    @quality = backstage.quality
-  end
-
-  def sulfras_tick
-  end
-
   def tick
-    case @name
-    when "Normal Item"
-      return normal_tick
-    when "Aged Brie"
-      return aged_brie_tick
-    when "Backstage passes to a TAFKAL80ETC concert"
-      return backstage_tick
-    when "Sulfuras, Hand of Ragnaros"
-      return sulfras_tick
-    end
+    @item = ItemFactory.get_item(name: @name, days_remaining: @days_remaining, quality: @quality)
+    @item.tick
+
+    @days_remaining = @item.days_remaining
+    @quality = @item.quality
   end
 end
