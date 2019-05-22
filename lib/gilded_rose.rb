@@ -1,3 +1,19 @@
+class Normal
+  attr_reader :days_remaining, :quality
+  def initialize(days_remaining: days_remaining, quality: quality)
+    @days_remaining = days_remaining
+    @quality = quality
+  end
+
+  def tick
+    @days_remaining -= 1
+    return if @quality <= 0
+
+    @quality -= 1
+    @quality -= 1 if @days_remaining < 0
+  end
+end
+
 class GildedRose
   attr_reader :name, :days_remaining, :quality
 
@@ -8,11 +24,11 @@ class GildedRose
   end
 
   def normal_tick
-    @days_remaining -= 1
-    return if @quality <= 0
+    normal = Normal.new(days_remaining: @days_remaining, quality: @quality)
+    normal.tick
 
-    @quality -= 1
-    @quality -= 1 if @days_remaining < 0
+    @days_remaining = normal.days_remaining
+    @quality = normal.quality
   end
 
   def aged_brie_tick
@@ -27,11 +43,11 @@ class GildedRose
   def backstage_tick
     @days_remaining -= 1
     return if @quality == 50
+    return @quality = 0 if @days_remaining < 0
 
     @quality += 1 if @days_remaining < 10
     @quality += 1 if @days_remaining < 5
     @quality += 1
-    @quality = 0 if @days_remaining < 0
   end
 
   def sulfras_tick
