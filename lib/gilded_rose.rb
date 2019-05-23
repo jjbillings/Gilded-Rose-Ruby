@@ -43,12 +43,21 @@ module GildedRose
     end
   end
 
+  class ConjuredManaCake < Item
+    def tick
+      @days_remaining -= 1
+      return if @quality <= 0
+      @quality -= 2 if @days_remaining < 0
+      @quality -= 2
+    end
+  end
+
   CLASS_MAP = {
     "Normal Item" => Normal,
     "Aged Brie" => AgedBrie,
     "Backstage passes to a TAFKAL80ETC concert" => Backstage,
     "Sulfuras, Hand of Ragnaros" => Item,
-    "Conjured Mana" => Item
+    "Conjured Mana Cake" => ConjuredManaCake
   }
 
   def self.for(name:, days_remaining:, quality:)
