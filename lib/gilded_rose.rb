@@ -57,19 +57,19 @@ class ItemFactory
 end
 
 class GildedRose
-  attr_reader :name, :days_remaining, :quality
-
   def initialize(name:, days_remaining:, quality:)
-    @name = name
-    @days_remaining = days_remaining
-    @quality = quality
+    @item = ItemFactory.get_item(name: name, days_remaining: days_remaining, quality: quality)
   end
 
   def tick
-    @item = ItemFactory.get_item(name: @name, days_remaining: @days_remaining, quality: @quality)
     @item.tick
+  end
 
-    @days_remaining = @item.days_remaining
-    @quality = @item.quality
+  def quality
+    @item.quality
+  end
+
+  def days_remaining
+    @item.days_remaining
   end
 end
